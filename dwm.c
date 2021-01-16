@@ -88,11 +88,14 @@ struct Client {
 	char name[256];
 	float mina, maxa;
 	int x, y, w, h;
+	int sfx, sfy, sfw, sfh; /* stored float geometry, used on mode revert */
 	int oldx, oldy, oldw, oldh;
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+	unsigned char expandmask;
+	int expandx1, expandy1, expandx2, expandy2;
+	Bool wasfloating, isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -101,6 +104,7 @@ struct Client {
 
 typedef struct {
 	unsigned int mod;
+    KeySym chain;
 	KeySym keysym;
 	void (*func)(const Arg *);
 	const Arg arg;
@@ -267,6 +271,7 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static KeySym keychain = -1;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -953,13 +958,18 @@ grabkeys(void)
 		unsigned int i, j;
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 		KeyCode code;
+		KeyCode chain;
 
 		XUngrabKey(dpy, AnyKey, AnyModifier, root);
 		for (i = 0; i < LENGTH(keys); i++)
-			if ((code = XKeysymToKeycode(dpy, keys[i].keysym)))
+			if ((code = XKeysymToKeycode(dpy, keys[i].keysym))) {
+				if (keys[i].chain != -1 &&
+					((chain = XKeysymToKeycode(dpy, keys[i].chain))))
+						code = chain;
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
 						True, GrabModeAsync, GrabModeAsync);
+			}
 	}
 }
 
@@ -985,17 +995,37 @@ isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info)
 void
 keypress(XEvent *e)
 {
-	unsigned int i;
+	unsigned int i, j;
 	KeySym keysym;
 	XKeyEvent *ev;
+	int current = 0;
+	unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 
 	ev = &e->xkey;
 	keysym = XKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0);
-	for (i = 0; i < LENGTH(keys); i++)
-		if (keysym == keys[i].keysym
-		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
-		&& keys[i].func)
+	for (i = 0; i < LENGTH(keys); i++) {
+		if (keysym == keys[i].keysym && keys[i].chain == -1
+				&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
+				&& keys[i].func)
 			keys[i].func(&(keys[i].arg));
+		else if (keysym == keys[i].chain && keychain == -1
+				&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
+				&& keys[i].func) {
+			current = 1;
+			keychain = keysym;
+			for (j = 0; j < LENGTH(modifiers); j++)
+				XGrabKey(dpy, AnyKey, 0 | modifiers[j], root,
+						True, GrabModeAsync, GrabModeAsync);
+		} else if (!current && keysym == keys[i].keysym
+				&& keychain != -1
+				&& keys[i].chain == keychain
+				&& keys[i].func)
+			keys[i].func(&(keys[i].arg));
+	}
+	if (!current) {
+		keychain = -1;
+		grabkeys();
+	}
 }
 
 void
@@ -1056,8 +1086,14 @@ manage(Window w, XWindowAttributes *wa)
 	updatewindowtype(c);
 	updatesizehints(c);
 	updatewmhints(c);
+	c->sfx = c->x;
+	c->sfy = c->y;
+	c->sfw = c->w;
+	c->sfh = c->h;
 	XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
 	grabbuttons(c, 0);
+	c->wasfloating = False;
+	c->expandmask = 0;
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating)
@@ -1322,9 +1358,9 @@ resizemouse(const Arg *arg)
 
 			nw = MAX(ev.xmotion.x - ocx - 2 * c->bw + 1, 1);
 			nh = MAX(ev.xmotion.y - ocy - 2 * c->bw + 1, 1);
-			if (c->mon->wx + nw >= selmon->wx && c->mon->wx + nw <= selmon->wx + selmon->ww
-			&& c->mon->wy + nh >= selmon->wy && c->mon->wy + nh <= selmon->wy + selmon->wh)
-			{
+                        if ((m = recttomon(c->x, c->y, nw, nh))) {
+                                if (m != selmon)
+                                        sendmon(c, m);
 				if (!c->isfloating && selmon->lt[selmon->sellt]->arrange
 				&& (abs(nw - c->w) > snap || abs(nh - c->h) > snap))
 					togglefloating(NULL);
@@ -1410,6 +1446,7 @@ scan(void)
 void
 sendmon(Client *c, Monitor *m)
 {
+	Monitor *oldm = selmon;
 	if (c->mon == m)
 		return;
 	unfocus(c, 1);
@@ -1500,8 +1537,18 @@ setfullscreen(Client *c, int fullscreen)
 void
 setlayout(const Arg *arg)
 {
-	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
+	if(!arg || !arg->v || arg->v != selmon->lt[selmon->sellt]) {
 		selmon->sellt ^= 1;
+                if (!selmon->lt[selmon->sellt]->arrange) {
+                        for (Client *c = selmon->clients ; c ; c = c->next) {
+                                if(!c->isfloating) {
+                                        /*restore last known float dimensions*/
+                                        resize(c, selmon->mx + c->sfx, selmon->my + c->sfy,
+                                               c->sfw, c->sfh, False);
+                                }
+                        }
+                }
+        }
 	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = (Layout *)arg->v;
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
@@ -1713,9 +1760,20 @@ togglefloating(const Arg *arg)
 	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-	if (selmon->sel->isfloating)
-		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
-			selmon->sel->w, selmon->sel->h, 0);
+        if(selmon->sel->isfloating) {
+                /*restore last known float dimensions*/
+                resize(selmon->sel, selmon->mx + selmon->sel->sfx, selmon->my + selmon->sel->sfy,
+                       selmon->sel->sfw, selmon->sel->sfh, False);
+        } else {
+                if (selmon->sel->isfullscreen)
+                        setfullscreen(selmon->sel, False);
+                /*save last known float dimensions*/
+                selmon->sel->sfx = selmon->sel->x - selmon->mx;
+                selmon->sel->sfy = selmon->sel->y - selmon->my;
+                selmon->sel->sfw = selmon->sel->w;
+                selmon->sel->sfh = selmon->sel->h;
+        }
+
 	arrange(selmon);
 }
 

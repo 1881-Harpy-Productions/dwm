@@ -5,13 +5,13 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "JetBrainsMono:size=10" };
-static const char dmenufont[]       = "JetBrainsMono:size=10";
-static const char col_red[]       = "#c04040";
+static const char *fonts[]          = { "JetBrains Mono:size=10" };
+static const char dmenufont[]       = "JetBrains Mono:size=10";
+static const char col_red[]       = "#c03030";
 static const char col_white[]       = "#a0a0a0";
 static const char col_black[]       = "#202020";
 static const char col_bg[]       = "#282828";
-static const char col_fg[]        = "#c0c0c0";
+static const char col_fg[]        = "#e0e0e0";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_fg, col_bg, col_black },
@@ -49,11 +49,12 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+#define TAGKEYS(CHAIN,KEY,TAG) \
+	{ MODKEY,                       CHAIN,    KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask,           CHAIN,    KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ MODKEY|ShiftMask,             CHAIN,    KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask|ShiftMask, CHAIN,    KEY,      toggletag,      {.ui = 1 << TAG} },
+
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -73,53 +74,58 @@ static const char *torrentcmd[] = {"st", "-e", "rtorrent", NULL};
 static const char *passcmd[] = {"keepassxc", NULL};
 static const char *musiccmd[] = {"st", "-e", "ncmpcpp", NULL};
 static const char *filecmd[] = {"st", "-e", "nnn", NULL};
-
+static const char *launchercmd[] = {"tekiyou", NULL};
+	
 static Key keys[] = {
-	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ControlMask,           XK_s,      spawn,          {.v = screencmd } },
-	{ MODKEY|ControlMask,           XK_b,      spawn,          {.v = wallcmd } },
-	{ MODKEY|ControlMask,           XK_m,      spawn,          {.v = mixercmd } },
-	{ MODKEY|ControlMask,           XK_f,      spawn,          {.v = filecmd } },
-	{ MODKEY|ControlMask,           XK_comma,  spawn,          {.v = voldowncmd } },
-	{ MODKEY|ControlMask,           XK_period, spawn,          {.v = volupcmd } },
-	{ MODKEY|ControlMask,           XK_r,      spawn,          {.v = rsscmd } },
-	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = torrentcmd } },
-	{ MODKEY|ControlMask,           XK_w,      spawn,          {.v = webcmd } },
-	{ MODKEY|ControlMask,           XK_x,      spawn,          {.v = passcmd } },
-	{ MODKEY|ControlMask,           XK_u,      spawn,          {.v = musiccmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+/* modifier                     chain key   key        function        argument */
+	{ MODKEY,                       -1,         XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             -1,         XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = rsscmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = screencmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = wallcmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = mixercmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = webcmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = torrentcmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = passcmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = musiccmd } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = filecmd } },
+	{ MODKEY,                       -1,         XK_a,      spawn,          {.v = launchercmd } },
+	{ MODKEY|ControlMask,           -1,         XK_comma,  spawn,          {.v = voldowncmd } },
+	{ MODKEY|ControlMask,           -1,         XK_period,  spawn,          {.v = volupcmd } },
+	{ MODKEY,                       -1,         XK_b,      togglebar,      {0} },
+	{ MODKEY,                       -1,         XK_j,      focusstack,     {.i = +1 } },
+	{ MODKEY,                       -1,         XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY,                       -1,         XK_i,      incnmaster,     {.i = +1 } },
+	{ MODKEY,                       -1,         XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       -1,         XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY,                       -1,         XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY,                       -1,         XK_Return, zoom,           {0} },
+	{ MODKEY,                       -1,         XK_Tab,    view,           {0} },
+	{ MODKEY|ShiftMask,             -1,         XK_c,      killclient,     {0} },
+	{ MODKEY,                       -1,         XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       -1,         XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       -1,         XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       -1,         XK_space,  setlayout,      {0} },
+	{ MODKEY|ShiftMask,             -1,         XK_space,  togglefloating, {0} },
+	{ MODKEY,                       -1,         XK_0,      view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             -1,         XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       -1,         XK_comma,  focusmon,       {.i = -1 } },
+	{ MODKEY,                       -1,         XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask,             -1,         XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             -1,         XK_period, tagmon,         {.i = +1 } },
+	TAGKEYS(                        -1,         XK_1,                      0)
+	TAGKEYS(                        -1,         XK_2,                      1)
+	TAGKEYS(                        -1,         XK_3,                      2)
+	TAGKEYS(                        -1,         XK_4,                      3)
+	TAGKEYS(                        -1,         XK_5,                      4)
+	TAGKEYS(                        -1,         XK_6,                      5)
+	TAGKEYS(                        -1,         XK_7,                      6)
+	TAGKEYS(                        -1,         XK_8,                      7)
+	TAGKEYS(                        -1,         XK_9,                      8)
+	{ MODKEY|ShiftMask,             -1,         XK_q,      quit,           {0} },
+	{ MODKEY,                       XK_a,       XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_a,       XK_t,      spawn,          {.v = termcmd } },
+
 };
 
 /* button definitions */
