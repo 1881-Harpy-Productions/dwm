@@ -29,7 +29,7 @@ static const char *const autostart[] = {
 };
 
 /* tagging */
-static const char *tags[] = { "\uf00a", "\uefab", "\ueca2", "\uef07", "\uef28", "\uefb3", "\uef58", "\uef12", "\uec44" };
+static const char *tags[] = { "\ueef0", "\uefab", "\ueca2", "\uef07", "\uef28", "\uefb3", "\uef58", "\uef12", "\uec44" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -74,8 +74,8 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *screencmd[] = {"screen", NULL};
-static const char *wallcmd[] = {"walpaper", NULL};
-static const char *mixercmd[] = {"st", "-e", "mixertiu", NULL};
+static const char *wallcmd[] = {"wallpaper", NULL};
+static const char *mixercmd[] = {"st", "-e", "mixertui", NULL};
 static const char *volupcmd[] = {"mixer", "vol", "+3", NULL};
 static const char *voldowncmd[] = {"mixer", "vol", "-3", NULL};
 static const char *rsscmd[] = {"st", "-e", "newsboat", NULL};
