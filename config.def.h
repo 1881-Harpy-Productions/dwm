@@ -18,6 +18,15 @@ static const char *colors[][3]      = {
 	[SchemeSel]  = { col_fg, col_red,  col_red  },
 };
 
+static const char *const autostart[] = {
+	"dunst", NULL,
+	"redshift", NULL,
+	"picom", "-b", NULL,
+	"dwm-status", NULL,
+	"musicpd", NULL,
+	NULL /* terminate */
+};
+
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
@@ -75,20 +84,22 @@ static const char *passcmd[] = {"keepassxc", NULL};
 static const char *musiccmd[] = {"st", "-e", "ncmpcpp", NULL};
 static const char *filecmd[] = {"st", "-e", "nnn", NULL};
 static const char *launchercmd[] = {"tekiyou", NULL};
+static const char *printscreencmd[] = {"scrot", NULL};
 	
 static Key keys[] = {
 /* modifier                     chain key   key        function        argument */
 	{ MODKEY,                       -1,         XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             -1,         XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = rsscmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = screencmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = wallcmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = mixercmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = webcmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = torrentcmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = passcmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = musiccmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = filecmd } },
+	{ MODKEY,                       -1,         XK_s,      spawn,          {.v = screencmd } },
+	{ MODKEY,                       XK_r,       XK_b,      spawn,          {.v = wallcmd } },
+	{ MODKEY,                       XK_r,       XK_m,      spawn,          {.v = mixercmd } },
+	{ MODKEY,                       XK_r,       XK_w,      spawn,          {.v = webcmd } },
+	{ MODKEY,                       XK_r,       XK_t,      spawn,          {.v = torrentcmd } },
+	{ MODKEY,                       XK_r,       XK_p,      spawn,          {.v = passcmd } },
+	{ MODKEY,                       XK_r,       XK_u,      spawn,          {.v = musiccmd } },
+	{ MODKEY,                       XK_r,       XK_f,      spawn,          {.v = filecmd } },
+	{ MODKEY,                       -1,       XK_Print,    spawn,          {.v = printscreencmd } },
 	{ MODKEY,                       -1,         XK_a,      spawn,          {.v = launchercmd } },
 	{ MODKEY|ControlMask,           -1,         XK_comma,  spawn,          {.v = voldowncmd } },
 	{ MODKEY|ControlMask,           -1,         XK_period,  spawn,          {.v = volupcmd } },
@@ -123,8 +134,6 @@ static Key keys[] = {
 	TAGKEYS(                        -1,         XK_8,                      7)
 	TAGKEYS(                        -1,         XK_9,                      8)
 	{ MODKEY|ShiftMask,             -1,         XK_q,      quit,           {0} },
-	{ MODKEY,                       XK_a,       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_a,       XK_t,      spawn,          {.v = termcmd } },
 
 };
 
