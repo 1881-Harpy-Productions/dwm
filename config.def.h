@@ -22,7 +22,6 @@ static const char *colors[][3]      = {
 static const char *const autostart[] = {
 	"dunst", NULL,
 	"redshift", NULL,
-	"picom", "-b", NULL,
 	"dwm-status", NULL,
 	"musicpd", NULL,
 	NULL /* terminate */
@@ -43,6 +42,8 @@ static const Rule rules[] = {
 	{ NULL,       NULL,     "ncmpcpp",    1 << 2,       0,           -1 },
 	{ NULL,       NULL,     "newsboat",   1 << 7,       0,           -1 },
 	{ "Gimp",     NULL,       NULL,       1 << 5,       0,           -1 },
+	{ "Keepassxc", NULL,      NULL,       1 << 6,       0,           -1 },
+	{ "Mpv",      NULL,       NULL,       1 << 5,       0,           -1 },
 };
 
 /* layout(s) */
@@ -81,6 +82,7 @@ static const char *voldowncmd[] = {"mixer", "vol", "-3", NULL};
 static const char *rsscmd[] = {"st", "-e", "newsboat", NULL};
 static const char *webcmd[] = {"firefox", NULL};
 static const char *torrentcmd[] = {"st", "-e", "rtorrent", NULL};
+static const char *lockcmd[] = {"slock", NULL};
 static const char *passcmd[] = {"keepassxc", NULL};
 static const char *musiccmd[] = {"st", "-e", "ncmpcpp", NULL};
 static const char *filecmd[] = {"st", "-e", "nnn", NULL};
@@ -95,6 +97,7 @@ static Key keys[] = {
 	{ MODKEY,                       -1,         XK_s,      spawn,          {.v = screencmd } },
 	{ MODKEY,                       XK_r,       XK_b,      spawn,          {.v = wallcmd } },
 	{ MODKEY,                       XK_r,       XK_m,      spawn,          {.v = mixercmd } },
+	{ MODKEY,                       XK_r,       XK_l,      spawn,          {.v = lockcmd } },
 	{ MODKEY,                       XK_r,       XK_w,      spawn,          {.v = webcmd } },
 	{ MODKEY,                       XK_r,       XK_t,      spawn,          {.v = torrentcmd } },
 	{ MODKEY,                       XK_r,       XK_p,      spawn,          {.v = passcmd } },
