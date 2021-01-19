@@ -44,7 +44,7 @@ static const Rule rules[] = {
 	{ NULL,       NULL,     "ncmpcpp",    1 << 2,       0,           -1 },
 	{ NULL,       NULL,     "newsboat",   1 << 7,       0,           -1 },
 	{ "Gimp",     NULL,       NULL,       1 << 5,       0,           -1 },
-	{ "Keepassxc", NULL,      NULL,       1 << 6,       0,           -1 },
+	{ "KeePassXC", NULL,      NULL,       1 << 6,       0,           -1 },
 	{ "Mpv",      NULL,       NULL,       1 << 5,       0,           -1 },
 };
 
