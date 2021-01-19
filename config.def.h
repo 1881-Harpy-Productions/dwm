@@ -89,7 +89,9 @@ static const char *musiccmd[] = {"st", "-e", "ncmpcpp", NULL};
 static const char *filecmd[] = {"st", "-e", "nnn", NULL};
 static const char *launchercmd[] = {"tekiyou", NULL};
 static const char *printscreencmd[] = {"scrot", NULL};
-	
+
+#include "mpdcontrol.c"
+
 static Key keys[] = {
 /* modifier                     chain key   key        function        argument */
 	{ MODKEY,                       -1,         XK_p,      spawn,          {.v = dmenucmd } },
@@ -143,6 +145,9 @@ static Key keys[] = {
 	TAGKEYS(                        -1,         XK_9,                      8)
 	{ MODKEY|ShiftMask,             -1,         XK_q,      quit,           {0} },
 
+	{ MODKEY,                       -1,         XK_F1,     mpdchange,      {.i = -1} },
+	{ MODKEY,                       -1,         XK_F2,     mpdchange,      {.i = +1} },
+	{ MODKEY,                       -1,         XK_Escape, mpdcontrol,     {0} },
 };
 
 /* button definitions */
