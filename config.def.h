@@ -62,7 +62,7 @@ static const Layout layouts[] = {
 	{ ">M>",      centeredfloatingmaster },
 	{ "TTT",      bstack },
 	{ "===",      bstackhoriz },
-
+	{ "[D]",      deck },
 };
 
 /* key definitions */
@@ -144,6 +144,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_l,       XK_5,      setlayout,      {.v = &layouts[4]} },
     	{ MODKEY|ControlMask,           XK_l,       XK_6,      setlayout,      {.v = &layouts[5]} },
    	{ MODKEY|ControlMask,           XK_l,       XK_7,      setlayout,      {.v = &layouts[6]} },
+	{ MODKEY|ControlMask,           XK_l,       XK_8,      setlayout,      {.v = &layouts[7]} },
 	TAGKEYS(                        -1,         XK_1,                      0)
 	TAGKEYS(                        -1,         XK_2,                      1)
 	TAGKEYS(                        -1,         XK_3,                      2)
@@ -175,7 +176,6 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask, -1,         XK_Down,   moveresizeedge, {.v = "B"} },
 	{ MODKEY|ControlMask|ShiftMask, -1,         XK_Left,   moveresizeedge, {.v = "L"} },
 	{ MODKEY|ControlMask|ShiftMask, -1,         XK_Right,  moveresizeedge, {.v = "R"} },
-
 	{ MODKEY,                       -1,         XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
 	{ MODKEY,                       -1,         XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
 	{ MODKEY,                       -1,         XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
