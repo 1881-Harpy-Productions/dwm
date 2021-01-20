@@ -51,6 +51,7 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
+#include "gaplessgrid.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
@@ -61,6 +62,7 @@ static const Layout layouts[] = {
 	{ "TTT",      bstack },
 	{ "===",      bstackhoriz },
 	{ "[D]",      deck },
+	{ "###",      gaplessgrid },
 };
 
 /* key definitions */
@@ -143,6 +145,7 @@ static Key keys[] = {
     	{ MODKEY|ControlMask,           XK_l,       XK_6,      setlayout,      {.v = &layouts[5]} },
    	{ MODKEY|ControlMask,           XK_l,       XK_7,      setlayout,      {.v = &layouts[6]} },
 	{ MODKEY|ControlMask,           XK_l,       XK_8,      setlayout,      {.v = &layouts[7]} },
+	{ MODKEY|ControlMask,           XK_l,       XK_9,      setlayout,      {.v = &layouts[8]} },
 	TAGKEYS(                        -1,         XK_1,                      0)
 	TAGKEYS(                        -1,         XK_2,                      1)
 	TAGKEYS(                        -1,         XK_3,                      2)
