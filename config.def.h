@@ -21,9 +21,7 @@ static const char *colors[][3]      = {
 };
 
 static const char *const autostart[] = {
-	"dunst", NULL,
 	"redshift", NULL,
-	"picom", "-b", NULL,
 	"dwm-status", NULL,
 	"musicpd", NULL,
 	NULL /* terminate */
@@ -45,7 +43,7 @@ static const Rule rules[] = {
 	{ NULL,       NULL,     "newsboat",   1 << 7,       0,           -1 },
 	{ "Gimp",     NULL,       NULL,       1 << 5,       0,           -1 },
 	{ "KeePassXC", NULL,      NULL,       1 << 6,       0,           -1 },
-	{ "Mpv",      NULL,       NULL,       1 << 5,       0,           -1 },
+	{ "mpv",      NULL,       NULL,       1 << 5,       0,           -1 },
 };
 
 /* layout(s) */
@@ -135,8 +133,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             -1,         XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             -1,         XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY|ShiftMask,             -1,	    XK_equal,  setgaps,        {.i = 0  } },
-	{ MODKEY|ControlMask,           -1,         XK_Up,  spawn,          {.v = voldowncmd } },
-	{ MODKEY|ControlMask,           -1,         XK_Down,  spawn,          {.v = volupcmd } },
+	{ MODKEY|ControlMask,           -1,         XK_Down,   spawn,          {.v = voldowncmd } },
+	{ MODKEY|ControlMask,           -1,         XK_Up,     spawn,          {.v = volupcmd } },
 	{ MODKEY|ControlMask,           XK_l,       XK_1,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY|ControlMask,           XK_l,       XK_2,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY|ControlMask,           XK_l,       XK_3,      setlayout,      {.v = &layouts[2]} },
