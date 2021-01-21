@@ -156,11 +156,9 @@ static Key keys[] = {
 	TAGKEYS(                        -1,         XK_8,                      7)
 	TAGKEYS(                        -1,         XK_9,                      8)
 	{ MODKEY|ShiftMask,             -1,         XK_q,      quit,           {0} },
-
 	{ MODKEY,                       -1,         XK_F1,     mpdchange,      {.i = -1} },
 	{ MODKEY,                       -1,         XK_F2,     mpdchange,      {.i = +1} },
 	{ MODKEY,                       -1,         XK_Escape, mpdcontrol,     {0} },
-
 	{ MODKEY,                       -1,         XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
 	{ MODKEY,                       -1,         XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
 	{ MODKEY,                       -1,         XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
@@ -193,7 +191,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask, -1,         XK_Down,   moveresizeedge, {.v = "B"} },
 	{ MODKEY|ControlMask|ShiftMask, -1,         XK_Left,   moveresizeedge, {.v = "L"} },
 	{ MODKEY|ControlMask|ShiftMask, -1,         XK_Right,  moveresizeedge, {.v = "R"} },
-
+        { MODKEY|ShiftMask,             -1,	    XK_f,      togglefullscr,  {0} },
 };
 
 /* button definitions */
