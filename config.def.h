@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const int gappx     = 5;                 /* gaps between windows */
 static const unsigned int snap      = 5;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -21,9 +21,10 @@ static const char *colors[][3]      = {
 };
 
 static const char *const autostart[] = {
-	"redshift", NULL,
-	"dwm-status", NULL,
-	"musicpd", NULL,
+	"xset", "-b", "off", NULL,
+	"wallpaper", NULL,
+	"screen", "1",
+	"xrdb", "~/.config/X11/Xresources", NULL,
 	NULL /* terminate */
 };
 
@@ -36,14 +37,17 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ "Thunderbird",  NULL,   NULL,       1 << 7,       0,           -1 },
-	{ NULL,       NULL,     "rtorrent",   1 << 3,       0,           -1 },
-	{ NULL,       NULL,     "ncmpcpp",    1 << 2,       0,           -1 },
-	{ NULL,       NULL,     "newsboat",   1 << 7,       0,           -1 },
-	{ "Gimp",     NULL,       NULL,       1 << 5,       0,           -1 },
-	{ "KeePassXC", NULL,      NULL,       1 << 6,       0,           -1 },
-	{ "mpv",      NULL,       NULL,       1 << 4,       0,           -1 },
+	{ "Qutebrowser",  NULL,    NULL,      1 << 8,       0,           -1 },
+	{ "Firefox",      NULL,    NULL,      1 << 8,       0,           -1 },
+	{ "Surf",         NULL,    NULL,      1 << 8,       0,           -1 },
+	{ NULL,           NULL,   "lynx",     1 << 8,       0,           -1 },
+	{ NULL,           NULL, "neomutt",    1 << 7,       0,           -1 },
+	{ "Thunderbird",  NULL,    NULL,      1 << 7,       0,           -1 },
+	{ NULL,           NULL, "rtorrent",   1 << 3,       0,           -1 },
+	{ NULL,           NULL, "ncmpcpp",    1 << 2,       0,           -1 },
+	{ NULL,           NULL, "newsboat",   1 << 7,       0,           -1 },
+	{ "Gimp",         NULL,   NULL,       1 << 5,       0,           -1 },
+	{ "mpv",          NULL,   NULL,       1 << 4,       0,           -1 },
 };
 
 /* layout(s) */
@@ -82,26 +86,28 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *screencmd[] = {"screen", NULL};
-static const char *wallcmd[] = {"wallpaper", NULL};
-static const char *mixercmd[] = {"st", "-e", "mixertui", NULL};
+static const char *wallcmd[] = {"wallpaper.mksh", NULL};
 static const char *volupcmd[] = {"mixer", "vol", "+3", NULL};
 static const char *voldowncmd[] = {"mixer", "vol", "-3", NULL};
-static const char *rsscmd[] = {"st", "-e", "newsboat", NULL};
-static const char *webcmd[] = {"firefox", NULL};
-static const char *torrentcmd[] = {"st", "-e", "rtorrent", NULL};
 static const char *lockcmd[] = {"slock", NULL};
-static const char *passcmd[] = {"keepassxc", NULL};
-static const char *musiccmd[] = {"st", "-e", "ncmpcpp", NULL};
-static const char *filecmd[] = {"st", "-e", "nnn", NULL};
-static const char *launchercmd[] = {"tekiyou", NULL};
 static const char *printscreencmd[] = {"scrot", NULL};
+static const char *openxsel[] = {"haikankou-x", NULL};
+static const char *filemgr[] = {"st", "-e", "nnn", NULL};
+static const char *musicp[] = {"st", "-e", "ncmpcpp", NULL};
+static const char *procmgr[] = {"st", "-e", "htop", NULL};
+static const char *editor[] = {"st", "-e", "kak", NULL};
+static const char *web[] = {"surf", NULL};
+static const char *mail[] = {"st", "-e", "neomutt", NULL};
+static const char *rss[] = {"st", "-e", "newsboat", NULL};
+static const char *pass[] = {"password-store", NULL};
+static const char *torrent[] = {"st", "-e", "rtorrent", NULL};
+static const char *mixer[] = {"st", "-e", "mixertui", NULL};
 
 #include "mpdcontrol.c"
 
 static Key keys[] = {
 /* modifier                     chain key   key        function        argument */
 	{ MODKEY,                       -1,         XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY,                       -1,         XK_a,      spawn,          {.v = launchercmd } },
 	{ MODKEY,                       -1,         XK_b,      togglebar,      {0} },
 	{ MODKEY,                       -1,         XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       -1,         XK_h,      setmfact,       {.f = -0.05} },
@@ -109,6 +115,7 @@ static Key keys[] = {
 	{ MODKEY,                       -1,         XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       -1,         XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       -1,         XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY,                       -1,         XK_o,      spawn,          {.v = openxsel } },
 	{ MODKEY,                       -1,         XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       -1,         XK_Return, zoom,           {0} },
 	{ MODKEY,                       -1,         XK_s,      spawn,          {.v = screencmd } },
@@ -119,15 +126,18 @@ static Key keys[] = {
 	{ MODKEY,                       -1,	    XK_minus,  setgaps,        {.i = -5 } },
 	{ MODKEY,                       -1,	    XK_equal,  setgaps,        {.i = +5 } },
 	{ MODKEY,                       XK_r,       XK_Print,  spawn,          {.v = printscreencmd } },
-	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = rsscmd } },
-	{ MODKEY,                       XK_r,       XK_b,      spawn,          {.v = wallcmd } },
-	{ MODKEY,                       XK_r,       XK_m,      spawn,          {.v = mixercmd } },
+	{ MODKEY|ControlMask,           -1,         XK_b,      spawn,          {.v = wallcmd } },
+	{ MODKEY,                       XK_r,       XK_f,      spawn,          {.v = filemgr } },
+	{ MODKEY,                       XK_r,       XK_u,      spawn,          {.v = musicp } },
+	{ MODKEY,                       XK_r,       XK_p,      spawn,          {.v = procmgr } },
+	{ MODKEY,                       XK_r,       XK_e,      spawn,          {.v = editor } },
+	{ MODKEY,                       XK_r,       XK_w,      spawn,          {.v = web } },
+	{ MODKEY,                       XK_r,       XK_m,      spawn,          {.v = mail } },
+	{ MODKEY,                       XK_r,       XK_r,      spawn,          {.v = rss } },
+	{ MODKEY,                       XK_r,       XK_s,      spawn,          {.v = pass } },
+	{ MODKEY,                       XK_r,       XK_t,      spawn,          {.v = torrent } },
+	{ MODKEY,                       XK_r,       XK_x,      spawn,          {.v = mixer } },
 	{ MODKEY,                       XK_r,       XK_l,      spawn,          {.v = lockcmd } },
-	{ MODKEY,                       XK_r,       XK_w,      spawn,          {.v = webcmd } },
-	{ MODKEY,                       XK_r,       XK_t,      spawn,          {.v = torrentcmd } },
-	{ MODKEY,                       XK_r,       XK_p,      spawn,          {.v = passcmd } },
-	{ MODKEY,                       XK_r,       XK_u,      spawn,          {.v = musiccmd } },
-	{ MODKEY,                       XK_r,       XK_f,      spawn,          {.v = filecmd } },
 	{ MODKEY|ShiftMask,             -1,         XK_c,      killclient,     {0} },
 	{ MODKEY|ShiftMask,             -1,         XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             -1,         XK_space,  togglefloating, {0} },
