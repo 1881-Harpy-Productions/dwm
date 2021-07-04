@@ -39,7 +39,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Qutebrowser",  NULL,    NULL,      1 << 8,       0,           -1 },
 	{ "Firefox",      NULL,    NULL,      1 << 8,       0,           -1 },
-	{ "Surf",         NULL,    NULL,      1 << 8,       0,           -1 },
+	{ NULL,           NULL,  "surf",      1 << 8,       0,           -1 },
 	{ NULL,           NULL,   "lynx",     1 << 8,       0,           -1 },
 	{ NULL,           NULL, "neomutt",    1 << 7,       0,           -1 },
 	{ "Thunderbird",  NULL,    NULL,      1 << 7,       0,           -1 },
@@ -96,7 +96,7 @@ static const char *filemgr[] = {"st", "-e", "nnn", NULL};
 static const char *musicp[] = {"st", "-e", "ncmpcpp", NULL};
 static const char *procmgr[] = {"st", "-e", "htop", NULL};
 static const char *editor[] = {"st", "-e", "kak", NULL};
-static const char *web[] = {"surf", NULL};
+static const char *web[] = {"firefox", NULL};
 static const char *mail[] = {"st", "-e", "neomutt", NULL};
 static const char *rss[] = {"st", "-e", "newsboat", NULL};
 static const char *pass[] = {"password-store", NULL};
