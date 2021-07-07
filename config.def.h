@@ -48,6 +48,7 @@ static const Rule rules[] = {
 	{ NULL,           NULL, "newsboat",   1 << 7,       0,           -1 },
 	{ "Gimp",         NULL,   NULL,       1 << 5,       0,           -1 },
 	{ "mpv",          NULL,   NULL,       1 << 4,       0,           -1 },
+	{ "Xmessage",         NULL,   NULL,       	-1,       0,           -1 },
 };
 
 /* layout(s) */
