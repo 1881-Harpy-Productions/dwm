@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const int gappx     = 5;                 /* gaps between windows */
 static const unsigned int snap      = 5;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -17,13 +17,13 @@ static const char col_fg[]        = "#e0e0e0";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_fg, col_bg, col_black },
-	[SchemeSel]  = { col_fg, col_red,  col_red  },
+	[SchemeSel]  = { col_black, col_red,  col_red  },
 };
 
 static const char *const autostart[] = {
 	"xset", "-b", "off", NULL,
 	"wallpaper", NULL,
-	"screen", "1",
+	"screen", "1", NULL,
 	"xrdb", "~/.config/X11/Xresources", NULL,
 	NULL /* terminate */
 };
@@ -37,18 +37,20 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Qutebrowser",  NULL,    NULL,      1 << 8,       0,           -1 },
-	{ "Firefox",      NULL,    NULL,      1 << 8,       0,           -1 },
+	{ "Firefox",      NULL,   NULL,       1 << 8,       0,           -1 },
+	{ "qutebrowser",  NULL,   NULL,       1 << 8,       0,           -1 },
+	{ "Thunderbird",  NULL,   NULL,       1 << 7,       0,           -1 },
 	{ NULL,           NULL,  "surf",      1 << 8,       0,           -1 },
-	{ NULL,           NULL,   "lynx",     1 << 8,       0,           -1 },
+	{ NULL,           NULL,  "lynx",      1 << 8,       0,           -1 },
 	{ NULL,           NULL, "neomutt",    1 << 7,       0,           -1 },
-	{ "Thunderbird",  NULL,    NULL,      1 << 7,       0,           -1 },
 	{ NULL,           NULL, "rtorrent",   1 << 3,       0,           -1 },
 	{ NULL,           NULL, "ncmpcpp",    1 << 2,       0,           -1 },
 	{ NULL,           NULL, "newsboat",   1 << 7,       0,           -1 },
 	{ "Gimp",         NULL,   NULL,       1 << 5,       0,           -1 },
 	{ "mpv",          NULL,   NULL,       1 << 4,       0,           -1 },
-	{ "Xmessage",         NULL,   NULL,       	-1,       0,           -1 },
+	{ "Xmessage",     NULL,   NULL,       -1,       1,           -1 },
+	{ "Gxmessage",    NULL,   NULL,       -1,       1,           -1 },
+	{ "St",           NULL,   "DIALOGUE", -1,       1,           -1 },
 };
 
 /* layout(s) */
@@ -87,9 +89,9 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *screencmd[] = {"screen", NULL};
-static const char *wallcmd[] = {"wallpaper.mksh", NULL};
-static const char *volupcmd[] = {"mixer", "vol", "+3", NULL};
-static const char *voldowncmd[] = {"mixer", "vol", "-3", NULL};
+static const char *wallcmd[] = {"wallpaper", NULL};
+static const char *volupcmd[] = {"mixer", "vol", "+2", NULL};
+static const char *voldowncmd[] = {"mixer", "vol", "-2", NULL};
 static const char *lockcmd[] = {"slock", NULL};
 static const char *printscreencmd[] = {"scrot", NULL};
 static const char *openxsel[] = {"haikankou-x", NULL};
@@ -97,7 +99,7 @@ static const char *filemgr[] = {"st", "-e", "nnn", NULL};
 static const char *musicp[] = {"st", "-e", "ncmpcpp", NULL};
 static const char *procmgr[] = {"st", "-e", "htop", NULL};
 static const char *editor[] = {"st", "-e", "kak", NULL};
-static const char *web[] = {"firefox", NULL};
+static const char *web[] = {"qutebrowser", NULL};
 static const char *mail[] = {"st", "-e", "neomutt", NULL};
 static const char *rss[] = {"st", "-e", "newsboat", NULL};
 static const char *pass[] = {"password-store", NULL};
